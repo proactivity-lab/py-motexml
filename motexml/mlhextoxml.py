@@ -39,7 +39,7 @@ import mle
 if __name__ == '__main__':
 
     parser = argparse.ArgumentParser(description="print hex as XML")
-    parser.add_argument("hexdata", default=None, help="Input data")
+    parser.add_argument("hexdata", default=None, nargs="+", help="Input data")
     parser.add_argument("--types", default="../../dt_types.txt", help="dt_types text file")
     parser.add_argument("--log", action="store_true")
     args = parser.parse_args()
@@ -48,10 +48,12 @@ if __name__ == '__main__':
         import logging_setup.logging_setup as logging_setup
         logging_setup.setup("mlhextoxml", "log")
 
-    print "Hex length = %u" % (len(args.hexdata) / 2)
-    print args.hexdata
+    hexdata = "".join(args.hexdata)
 
-    data = args.hexdata.decode("hex")
+    print "Hex length = %u" % (len(hexdata) / 2)
+    print hexdata
+
+    data = hexdata.decode("hex")
 
     # Generate C compatible initializer array
     outputarray = ""
