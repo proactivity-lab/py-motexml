@@ -94,7 +94,7 @@ class MLObject():
 
 class MLE():
 
-    def __init__(self, size=255):
+    def __init__(self, size=512):
         """ml encoder initialization."""
         self._enc = ctypes.create_string_buffer(lib.MLE_encoderSize())
         self._buffer = ctypes.create_string_buffer(size)
