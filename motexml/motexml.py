@@ -87,22 +87,14 @@ def get_ovalue(element):
         if v is not None:
             v = v.lstrip().rstrip()
             if v.startswith("0x") or v.startswith("0X"):
-                try:
-                    return int(v, 16)
-                except ValueError:
-                    log.exception("")
+                return int(v, 16)
             elif "." in v:
-                try:
-                    return int(float(v))
-                except ValueError:
-                    log.exception("")
+                return int(float(v))
             else:
-                try:
-                    return int(v)
-                except ValueError:
-                    log.exception("")
+                return int(v)
 
     return None
+
 
 def get_buffer_as_uint8_list(element):
     if element is not None:
@@ -151,15 +143,37 @@ class MoteXMLTranslator():
 
         f.close()
 
+    def _get_string_value(self, element):
+        """
+        Assume that the element value is another tag type and try to look it up.
+        """
+        if element is not None:
+            v = element.get("value")
+            if v is not None:
+                v = v.lstrip().rstrip()
+                if v in self._tagdbstr:
+                    return self._tagdbstr[v]
+                raise ValueError("%s" % v)
+        return None
+
     def _append_with_children(self, enc, subject, element):
         if element.tag in self._tagdbstr:
             mlobject = mle.MLObject()
             mlobject.type = self._tagdbstr[element.tag]
             mlobject.subject = subject
 
-            value = get_ovalue(element)
-            if value is not None:
-                mlobject.setValue(value)
+            try:
+                value = get_ovalue(element)
+                if value is not None:
+                    mlobject.setValue(value)
+            except ValueError:  # Has value, but not a number, maybe it is a string that can be turned into a number
+                try:
+                    value = self._get_string_value(element)
+                    if value is not None:
+                        mlobject.setValue(value)
+                except ValueError:
+                    log.exception("")
+                    return 1
 
             if element.get("buffer") is not None:
                 buf = element.get("buffer").decode("hex")
