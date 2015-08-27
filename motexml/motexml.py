@@ -56,8 +56,8 @@ def xml_from_file(filename):
 def xml_from_string(xmlstring):
     try:
         element = ElementTree.fromstring(xmlstring)
-    except ETREE_EXCEPTIONS:
-        log.exception("")
+    except ETREE_EXCEPTIONS as e:
+        log.error("xml_from_string exception: %s" % e.msg)
         element = None
 
     return element
@@ -132,12 +132,15 @@ class MoteXMLTranslator():
                     self._tagdbint[code] = text
                     self._tagdbstr[text] = code
                     if len(tokens) >= 3:
-                        try:
-                            tokens[2] % (0)
+                        if tokens[2] == "dt_types":
                             self._tagdbintrepr[code] = tokens[2]
-                        except TypeError:
-                            log.error("%s line %i: Cannot use \"%s\" as formatting string" % (filename, lnum, tokens[2]))
-                            self._tagdbintrepr[code] = "%i"
+                        else:
+                            try:
+                                tokens[2] % (0)
+                                self._tagdbintrepr[code] = tokens[2]
+                            except TypeError:
+                                log.error("%s line %i: Cannot use \"%s\" as formatting string" % (filename, lnum, tokens[2]))
+                                self._tagdbintrepr[code] = "%i"
                     else:
                         self._tagdbintrepr[code] = "%i"
 
@@ -193,7 +196,7 @@ class MoteXMLTranslator():
         enc = mle.MLE()
         for c in list(xml_packet):
             if self._append_with_children(enc, 0, c) != 0:
-                return ""
+                return None
         return enc.str()
 
     def _xml_append_with_children(self, element, subject, mote_packet):
@@ -210,7 +213,14 @@ class MoteXMLTranslator():
 
             subelement = ElementTree.SubElement(element, type)
             if object.valueIsPresent:
-                subelement.set("value", repr % (object.value))
+                if repr == "dt_types":
+                    if object.value in self._tagdbint:
+                        value = self._tagdbint[object.value]
+                    else:
+                        value = "0x%X" % (object.value)
+                else:
+                    value = repr % (object.value)
+                subelement.set("value", value)
             if object.bufferLength > 0:
                 subelement.set("buffer", object.getBuffer().encode("hex"))
 
