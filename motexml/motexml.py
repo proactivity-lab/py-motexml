@@ -95,6 +95,12 @@ def get_ovalue(element):
 
     return None
 
+def get_svalue(element):
+    if element is not None:
+        v = element.get("value")
+        if v is not None:
+            return v.lstrip().rstrip()
+    return None
 
 def get_buffer_as_uint8_list(element):
     if element is not None:
