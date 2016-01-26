@@ -36,22 +36,24 @@ import mle
 from xml.etree import ElementTree
 from xml.dom import minidom
 
+import logging
+log = logging.getLogger(__name__)
+
 if hasattr(ElementTree, 'ParseError'):
     ETREE_EXCEPTIONS = (ElementTree.ParseError)
 else: # Python <= 2.6
     from xml.parsers import expat
     ETREE_EXCEPTIONS = (expat.ExpatError)
 
-import logging
-log = logging.getLogger(__name__)
 
 def xml_from_file(filename):
     try:
         with open(filename, 'r') as f:
             return ElementTree.fromstring(f.read())
-    except:
+    except IOError:
         log.exception("")
         return None
+
 
 def xml_from_string(xmlstring):
     try:
@@ -62,6 +64,7 @@ def xml_from_string(xmlstring):
 
     return element
 
+
 def xml_to_string(element):
     if element is not None:
         simple = ElementTree.tostring(element, 'utf-8')
@@ -71,8 +74,10 @@ def xml_to_string(element):
 
     return "<dt_none/>"
 
+
 def unsigned32(value):
     return 0xFFFFFFFF & value
+
 
 def get_child_ovalue(element, child):
     if element is not None:
@@ -81,9 +86,10 @@ def get_child_ovalue(element, child):
             return get_ovalue(ch)
     return None
 
-def get_ovalue(element):
+
+def get_ovalue(element, key="value"):
     if element is not None:
-        v = element.get("value")
+        v = element.get(key)
         if v is not None:
             v = v.lstrip().rstrip()
             if v.startswith("0x") or v.startswith("0X"):
@@ -95,12 +101,14 @@ def get_ovalue(element):
 
     return None
 
+
 def get_svalue(element):
     if element is not None:
         v = element.get("value")
         if v is not None:
             return v.lstrip().rstrip()
     return None
+
 
 def get_buffer_as_uint8_list(element):
     if element is not None:
@@ -113,7 +121,8 @@ def get_buffer_as_uint8_list(element):
 
     return None
 
-class MoteXMLTranslator():
+
+class MoteXMLTranslator(object):
 
     def __init__(self, filename = None):
         self._tagdbint = {}
