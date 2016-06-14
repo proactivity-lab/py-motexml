@@ -1,0 +1,3 @@
+#!/usr/local/bin/python
+from motexml.gentypes import main
+main()

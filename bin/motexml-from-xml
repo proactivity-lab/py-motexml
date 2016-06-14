@@ -1,0 +1,3 @@
+#!/usr/local/bin/python
+from motexml.xmltomlhex import main
+main()
