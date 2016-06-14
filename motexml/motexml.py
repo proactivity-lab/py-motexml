@@ -1,47 +1,22 @@
-#
-# Copyright (c) 2011 Tallinn University of Technology
-# All rights reserved.
-#
-# Redistribution and use in source and binary forms, with or without
-# modification, are permitted provided that the following conditions
-# are met:
-#
-# - Redistributions of source code must retain the above copyright
-#   notice, this list of conditions and the following disclaimer.
-# - Redistributions in binary form must reproduce the above copyright
-#   notice, this list of conditions and the following disclaimer in the
-#   documentation and/or other materials provided with the
-#   distribution.
-# - Neither the name of the copyright holders nor the names of
-#   its contributors may be used to endorse or promote products derived
-#   from this software without specific prior written permission.
-#
-# THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS
-# "AS IS" AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT
-# LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS
-# FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL
-# THE COPYRIGHT HOLDER OR CONTRIBUTORS BE LIABLE FOR ANY DIRECT,
-# INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
-# (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR
-# SERVICES; LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION)
-# HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT,
-# STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR OTHERWISE)
-# ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF ADVISED
-# OF THE POSSIBILITY OF SUCH DAMAGE.
-#
-# @author Raido Pahtma
-#
+"""motexml.py: MoteXML."""
 import re
-import mle
+from . import mle
 from xml.etree import ElementTree
 from xml.dom import minidom
 
 import logging
 log = logging.getLogger(__name__)
 
+__author__ = "Raido Pahtma"
+__license__ = "MIT"
+
+
+version = "0.1.0.dev1"
+
+
 if hasattr(ElementTree, 'ParseError'):
     ETREE_EXCEPTIONS = (ElementTree.ParseError)
-else: # Python <= 2.6
+else:  # Python <= 2.6
     from xml.parsers import expat
     ETREE_EXCEPTIONS = (expat.ExpatError)
 
@@ -215,39 +190,38 @@ class MoteXMLTranslator(object):
         return enc.str()
 
     def _xml_append_with_children(self, element, subject, mote_packet):
-        iter = mle.MLI(mote_packet)
-        object = iter.nextWithSubject(subject)
-        while object is not None:
-            if object.type in self._tagdbint:
-                type = self._tagdbint[object.type]
-                repr = self._tagdbintrepr[object.type]
+        iterator = mle.MLI(mote_packet)
+        obj = iterator.nextWithSubject(subject)
+        while obj is not None:
+            if obj.type in self._tagdbint:
+                type = self._tagdbint[obj.type]
+                repr = self._tagdbintrepr[obj.type]
             else:
-                type = "dt_unknown_%08x" % (object.type & 0xffffffff)
+                type = "dt_unknown_%08x" % (obj.type & 0xffffffff)
                 repr = "%i"
-                log.warning("type %x is unknown" % (object.type & 0xffffffff))
+                log.warning("type %x is unknown" % (obj.type & 0xffffffff))
 
             subelement = ElementTree.SubElement(element, type)
-            if object.valueIsPresent:
+            if obj.valueIsPresent:
                 if repr == "dt_types":
-                    if object.value in self._tagdbint:
-                        value = self._tagdbint[object.value]
+                    if obj.value in self._tagdbint:
+                        value = self._tagdbint[obj.value]
                     else:
-                        value = "0x%X" % (object.value)
+                        value = "0x%X" % (obj.value)
                 else:
-                    value = repr % (object.value)
+                    value = repr % (obj.value)
                 subelement.set("value", value)
-            if object.bufferLength > 0:
-                subelement.set("buffer", object.getBuffer().encode("hex"))
+            if obj.bufferLength > 0:
+                subelement.set("buffer", obj.getBuffer().encode("hex"))
 
-            if self._xml_append_with_children(subelement, object.index, mote_packet) > 0:
+            if self._xml_append_with_children(subelement, obj.index, mote_packet) > 0:
                 return 1
 
-            object = iter.nextWithSubject(subject)
+            obj = iterator.nextWithSubject(subject)
 
         return 0
 
     def translate_to_xml(self, mote_packet):
-        iter = mle.MLI(mote_packet)
         element = ElementTree.Element("xml_packet")
         if self._xml_append_with_children(element, 0, mote_packet) == 0:
             return element
