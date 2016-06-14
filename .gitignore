@@ -1,0 +1,4 @@
+*.pyc
+.idea
+dist
+motexml.egg-info
