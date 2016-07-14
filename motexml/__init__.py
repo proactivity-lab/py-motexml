@@ -1,6 +1,6 @@
 """__init__.py: MoteXML init."""
 
-from .motexml import version
-
 __author__ = "Raido Pahtma"
 __license__ = "MIT"
+
+version = "0.1.1"

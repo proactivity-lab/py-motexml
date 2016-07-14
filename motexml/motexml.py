@@ -11,9 +11,6 @@ __author__ = "Raido Pahtma"
 __license__ = "MIT"
 
 
-version = "0.1.0.dev1"
-
-
 if hasattr(ElementTree, 'ParseError'):
     ETREE_EXCEPTIONS = (ElementTree.ParseError)
 else:  # Python <= 2.6
