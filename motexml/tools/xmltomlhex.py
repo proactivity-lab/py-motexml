@@ -10,7 +10,7 @@ def main():
     import argparse
     parser = argparse.ArgumentParser(description="print hex as XML")
     parser.add_argument("filename", default=None, help="Input file name")
-    parser.add_argument("--types", default="../../dt_types.txt", help="dt_types text file")
+    parser.add_argument("--types", default="dt_types.txt", help="dt_types text file")
     args = parser.parse_args()
 
     trans = motexml.MoteXMLTranslator(args.types)

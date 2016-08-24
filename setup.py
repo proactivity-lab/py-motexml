@@ -3,7 +3,7 @@ motexml: MoteXML binary XML encoding format python support package.
 Warpper around shared library for python.
 """
 
-from setuptools import setup
+from setuptools import setup, find_packages
 from os.path import join as pjoin
 
 import motexml
@@ -19,7 +19,7 @@ setup(name='motexml',
       author_email='raido.pahtma@ttu.ee',
       license='MIT',
       platforms=['any'],
-      packages=['motexml'],
+      packages=find_packages(),
       install_requires=["lxml"],
       test_suite='nose.collector',
       tests_require=['nose'],

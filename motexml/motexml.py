@@ -1,6 +1,8 @@
 """motexml.py: MoteXML."""
+from __future__ import absolute_import
+
 import re
-from . import mle
+from motexml import mle
 from xml.etree import ElementTree
 from xml.dom import minidom
 
