@@ -6,6 +6,7 @@ __license__ = "MIT"
 
 libname = "libmlformat.so"
 lib = ctypes.cdll.LoadLibrary(libname)
+lib.MLO_getBuffer.restype = ctypes.POINTER(ctypes.c_char)
 
 
 class MLObject(object):
