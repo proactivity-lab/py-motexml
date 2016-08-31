@@ -3,4 +3,5 @@
 __author__ = "Raido Pahtma"
 __license__ = "MIT"
 
-version = "0.1.2"
+__version__ = "0.1.3"
+version = __version__
