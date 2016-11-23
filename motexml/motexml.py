@@ -68,6 +68,8 @@ def get_ovalue(element, key="value"):
             v = v.lstrip().rstrip()
             if v.startswith("0x") or v.startswith("0X"):
                 return int(v, 16)
+            if v.startswith("0b") or v.startswith("0B"):
+                return int(v, 2)
             elif "." in v:
                 return int(float(v))
             else:
