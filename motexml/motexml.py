@@ -35,7 +35,7 @@ def xml_from_string(xmlstring):
     try:
         element = ElementTree.fromstring(xmlstring)
     except ETREE_EXCEPTIONS as e:
-        log.error("xml_from_string exception: %s" % e.msg)
+        log.error("xml_from_string exception: %s", e.msg)
         element = None
 
     return element
@@ -92,10 +92,10 @@ def get_buffer_as_uint8_list(element):
     if element is not None:
         b = element.get("buffer")
         if b is not None:
-            if (len(b) > 0) and ((len(b) % 2) == 0):
-                return [int(b[i:i+2], 16) for i in xrange(0, len(b), 2)]
+            if len(b) > 0 and (len(b) % 2) == 0:
+                return [int(b[i:i+2], 16) for i in range(0, len(b), 2)]
             else:
-                log.error("bad buffer length %u : %s" % (len(b), b))
+                log.error("bad buffer length %u : %s", len(b), b)
 
     return None
 
@@ -112,32 +112,29 @@ class MoteXMLTranslator(object):
             self.load_tag_db(filename)
 
     def load_tag_db(self, filename):
-        f = open(filename, 'r')
-        lnum = 0
-        for line in f:
-            lnum += 1
-            line = line.split("#")[0].rstrip().lstrip()
-            if len(line) > 0:
-                tokens = re.findall(r'[\w|%]+', line)
-                if len(tokens) >= 2:
-                    code = int(tokens[0], 16)
-                    text = tokens[1]
-                    self._tagdbint[code] = text
-                    self._tagdbstr[text] = code
-                    if len(tokens) >= 3:
-                        if tokens[2] == "dt_types":
-                            self._tagdbintrepr[code] = tokens[2]
-                        else:
-                            try:
-                                tokens[2] % (0)
+        with open(filename, 'r') as f:
+            for lnum, line in enumerate(f):
+                line = line.split("#")[0].rstrip().lstrip()
+                if line:
+                    tokens = re.findall(r'[\w|%]+', line)
+                    if len(tokens) >= 2:
+                        code = int(tokens[0], 16)
+                        text = tokens[1]
+                        self._tagdbint[code] = text
+                        self._tagdbstr[text] = code
+                        if len(tokens) >= 3:
+                            if tokens[2] == "dt_types":
                                 self._tagdbintrepr[code] = tokens[2]
-                            except TypeError:
-                                log.error("%s line %i: Cannot use \"%s\" as formatting string" % (filename, lnum, tokens[2]))
-                                self._tagdbintrepr[code] = "%i"
-                    else:
-                        self._tagdbintrepr[code] = "%i"
-
-        f.close()
+                            else:
+                                try:
+                                    tokens[2] % (0)
+                                    self._tagdbintrepr[code] = tokens[2]
+                                except TypeError:
+                                    log.error("%s line %i: Cannot use \"%s\" as formatting string",
+                                              filename, lnum, tokens[2])
+                                    self._tagdbintrepr[code] = "%i"
+                        else:
+                            self._tagdbintrepr[code] = "%i"
 
     def _get_string_value(self, element):
         """
@@ -181,7 +178,7 @@ class MoteXMLTranslator(object):
                 if self._append_with_children(enc, ndex, c) != 0:
                     return 1
         else:
-            log.error("tag %s is unknown" % (element.tag))
+            log.error("tag %s is unknown", element.tag)
             return 1
         return 0
 
@@ -202,7 +199,7 @@ class MoteXMLTranslator(object):
             else:
                 type = "dt_unknown_%08x" % (obj.type & 0xffffffff)
                 repr = "%i"
-                log.warning("type %x is unknown" % (obj.type & 0xffffffff))
+                log.warning("type %x is unknown", obj.type & 0xffffffff)
 
             subelement = ElementTree.SubElement(element, type)
             if obj.valueIsPresent:
@@ -240,7 +237,7 @@ class MoteXMLTranslator(object):
         if element.get("value") is not None:
             value = "value=" + str(element.get("value"))
 
-        log.info("%s%s %s %s" % (depth*"    ", element.tag, value, known))
+        log.info("%s%s %s %s", depth*"    ", element.tag, value, known)
         for c in list(element):
             if c != element:
                 if c is not None:
