@@ -1,12 +1,14 @@
 """motexml.py: MoteXML."""
 from __future__ import absolute_import
 
+from codecs import decode, encode
+import logging
 import re
-from motexml import mle
 from xml.etree import ElementTree
 from xml.dom import minidom
 
-import logging
+from motexml import mle
+
 log = logging.getLogger(__name__)
 
 __author__ = "Raido Pahtma"
@@ -170,7 +172,7 @@ class MoteXMLTranslator(object):
                     return 1
 
             if element.get("buffer") is not None:
-                buf = element.get("buffer").decode("hex")
+                buf = decode(element.get("buffer"), "hex")
                 mlobject.setBuffer(buf, len(buf))
 
             ndex = enc.appendObject(mlobject)
@@ -213,7 +215,7 @@ class MoteXMLTranslator(object):
                     value = repr % (obj.value)
                 subelement.set("value", value)
             if obj.bufferLength > 0:
-                subelement.set("buffer", obj.getBuffer().encode("hex"))
+                subelement.set("buffer", encode(obj.getBuffer(), "hex"))
 
             if self._xml_append_with_children(subelement, obj.index, mote_packet) > 0:
                 return 1
