@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """mlhextoxml.py: MoteXML binary to XML translator."""
+from codecs import decode
+
 from motexml import motexml
 
 __author__ = "Raido Pahtma"
@@ -18,12 +20,12 @@ def main():
     print("Hex length = %u" % (len(hexdata) / 2))
     print(hexdata)
 
-    data = hexdata.decode("hex")
+    data = decode(hexdata, "hex")
 
     # Generate C compatible initializer array
     out_arr = ""
     for i in range(0, len(data)):
-        out_arr += "0x%x," % (ord(data[i]))
+        out_arr += "0x%x," % (ord(data[i:i+1]))
     print("{%s}" % out_arr[:-1])
 
     # Translate to XML

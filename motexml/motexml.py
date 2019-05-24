@@ -102,7 +102,7 @@ def get_buffer_as_uint8_list(element):
 
 class MoteXMLTranslator(object):
 
-    def __init__(self, filename = None):
+    def __init__(self, filename=None):
         self._tagdbint = {}
         self._tagdbintrepr = {}
         self._tagdbstr = {}

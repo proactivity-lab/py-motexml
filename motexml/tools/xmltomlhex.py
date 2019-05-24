@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """xmltomlhex.py: XML to MoteXML binary translator."""
+from codecs import encode
+
 from motexml import motexml
 
 __author__ = "Raido Pahtma"
@@ -20,13 +22,13 @@ def main():
     xd = trans.translate_to_xml(data)
 
     print(motexml.xml_to_string(xd))
-    print("Hex length = %u" % (len(data.encode("hex")) / 2))
-    print(data.encode("hex"))
+    print("Hex length = %u" % (len(encode(data, "hex")) / 2))
+    print(encode(data, "hex"))
 
     # Generate C compatible initializer array
     out_arr = ""
     for i in range(0, len(data)):
-        out_arr += "0x%x," % (ord(data[i]))
+        out_arr += "0x%x," % (ord(data[i:i+1]))
     print("{%s}" % out_arr[:-1])
 
 
