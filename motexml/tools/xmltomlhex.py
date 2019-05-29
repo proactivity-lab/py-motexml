@@ -1,5 +1,7 @@
 #!/usr/bin/env python
 """xmltomlhex.py: XML to MoteXML binary translator."""
+from __future__ import print_function
+
 from codecs import encode
 
 from motexml import motexml
