@@ -6,6 +6,9 @@ from xml.etree import ElementTree
 
 from motexml.motexml import MoteXMLTranslator
 
+__author__ = "Kaarel Ratas"
+__license__ = "MIT"
+
 
 class XMLToBytesTester(TestCase):
     """Test XML input to binary output."""

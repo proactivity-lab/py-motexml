@@ -2,13 +2,13 @@
 from __future__ import absolute_import
 
 from codecs import decode, encode
-import logging
 import re
 from xml.etree import ElementTree
 from xml.dom import minidom
 
 from motexml import mle
 
+import logging
 log = logging.getLogger(__name__)
 
 __author__ = "Raido Pahtma"
@@ -212,7 +212,9 @@ class MoteXMLTranslator(object):
                     value = repr % (obj.value)
                 subelement.set("value", value)
             if obj.bufferLength > 0:
-                subelement.set("buffer", encode(obj.getBuffer(), "hex"))
+                # The decode will use the default 'ascii' encoding - this is guaranteed due to
+                # the hex str/bytes only containing elements from the class [0-9A-F]
+                subelement.set("buffer", decode(encode(obj.getBuffer(), "hex")))
 
             if self._xml_append_with_children(subelement, obj.index, mote_packet) > 0:
                 return 1
