@@ -1,0 +1,11 @@
+Source: motexml
+Section: devel
+Priority: optional
+Maintainer: Raido Pahtma <raido@thinnect.com>
+Build-Depends: debhelper (>= 10), dh-python, python3-all, python3-setuptools
+
+Package: motexml
+Architecture: all
+Depends: python3-nose, ${python3:Depends}, ${misc:Depends}
+Description: Motexml 
+ Library that contains motexml.
