@@ -11,7 +11,7 @@ motexml.egg-info
 *.prerm*
 *.postinst*
 .debhelper
-motexml
+python3-motexml
 debhelper-build-stamp
 files
 build

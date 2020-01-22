@@ -1,4 +1,4 @@
-motexml (1.0.0-1) stretch; urgency=medium
+python3-motexml (1.0.0-1) stretch; urgency=medium
 
   * Initial packaging work.
 

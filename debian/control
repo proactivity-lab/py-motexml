@@ -1,10 +1,11 @@
-Source: motexml
+Source: python3-motexml
 Section: devel
 Priority: optional
 Maintainer: Raido Pahtma <raido@thinnect.com>
+Homepage: https://github.com/proactivity-lab/python-motexml
 Build-Depends: debhelper (>= 10), dh-python, python3-all, python3-setuptools
 
-Package: motexml
+Package: python3-motexml
 Architecture: all
 Depends: python3-nose, ${python3:Depends}, ${misc:Depends}
 Description: Motexml 
