@@ -3,3 +3,16 @@ __pycache__/
 .idea
 dist
 motexml.egg-info
+
+# Debian
+/.pybuild
+/*.egg-info
+*.substvars
+*.prerm*
+*.postinst*
+.debhelper
+python3-motexml
+debhelper-build-stamp
+files
+build
+.eggs

@@ -1,0 +1,5 @@
+python3-motexml (1.0.0-1) stretch; urgency=medium
+
+  * Initial packaging work.
+
+ -- Raido Pahtma <raido.pahtma@ttu.ee>  Wed, 22 Jan 2020 14:10:49 +0200
