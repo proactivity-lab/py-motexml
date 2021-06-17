@@ -14,7 +14,10 @@ class XMLToBytesTester(TestCase):
     """Test XML input to binary output."""
     def setUp(self):
         # TODO: package dt_types.txt with this package somehow
-        self.translator = MoteXMLTranslator(os.environ['DT_TYPES'])
+        if 'DT_TYPES' in os.environ:
+            self.translator = MoteXMLTranslator(os.environ['DT_TYPES'])
+        else:
+            self.translator = MoteXMLTranslator('/usr/share/mist-dt-types/dt_types.txt')
 
     def test_packet_1(self):
         """Tests 1st sample packet."""
